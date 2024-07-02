@@ -9,7 +9,7 @@ else
     DIR="$1"
 fi
 
-FILES=$(find "${DIR}" -maxdepth 1 -type f -name "*CCCTrio*.h5" -exec basename {} \;)
+FILES=$(find "$DIR" -maxdepth 1 -name "*.h5")
 
 #printf "old list:\n"
 #printf "%s\n" "${FILES[@]}"

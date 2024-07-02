@@ -1,7 +1,7 @@
 import argparse
 import h5py
 import os
-import pathlib
+from pathlib import Path
 
 import numpy as np
 import sigpy as sp
@@ -95,7 +95,6 @@ if __name__ == "__main__":
 
     OUT_DIR = args.dir
 
-
     # %% read in k-space data
     IN_DIR = args.dir + '/' + args.data
     #print('> read in data ', IN_DIR)
@@ -182,7 +181,7 @@ if __name__ == "__main__":
     acq_slices = np.squeeze(abs(acq_slices))
 
         # save recon files
-    f = h5py.File(OUT_DIR + '/' + args.dir + '_processed.h5', 'w')
+    f = h5py.File(OUT_DIR + '/' + Path(args.data).stem + '_processed.h5', 'w')
     dset = f.create_dataset('temptv', data=acq_slices)
     dset.attrs['spokes_per_frame'] = args.spokes_per_frame
     dset.attrs['number_of_frames'] = N_time

@@ -2,16 +2,11 @@ import argparse
 from datetime import datetime, timedelta
 import h5py
 import os
-import pathlib
+from pathlib import Path
 import pydicom
-# from pydicom import Dataset
 from pydicom.datadict import add_dict_entry
-# from pydicom.dataset import FileDataset, FileMetaDataset
-# from pydicom.uid import UID
 
 import numpy as np
-
-DIR = os.path.dirname(os.path.realpath(__file__))
 
 # %%
 if __name__ == "__main__":
@@ -22,6 +17,10 @@ if __name__ == "__main__":
     parser.add_argument('--dcm',
                         default='GRASP_anno00001_anon.dcm',
                         help='a dicom file with tags')
+
+    parser.add_argument('--dir',
+                        default='/fastMRI_breast_001_1',
+                        help='radial k-space data')
 
     parser.add_argument('--h5py',
                         default='/fastMRI_breast_001_1.h5',
@@ -45,13 +44,12 @@ if __name__ == "__main__":
     # read in the original dicom file
     ds = pydicom.dcmread(args.dcm)
 
-
-    OUT_DIR = DIR + '/' + args.h5py  + '/' + args.h5py + '_DCM_processed'
+    OUT_DIR = args.dir + '/' + args.h5py + '_DCM_processed'
     OUT_DIR = OUT_DIR.split('.h5')[0]
-    pathlib.Path(OUT_DIR).mkdir(parents=True, exist_ok=True)
+    Path(OUT_DIR).mkdir(parents=True, exist_ok=True)
     #print('> reconstructed files are stored in: ', OUT_DIR)
 
-    f = h5py.File(DIR + '/' + args.h5py + '/' + args.h5py + '_processed.h5', 'r')
+    f = h5py.File(args.dir + '/' + Path(args.h5py).stem + '_processed.h5', 'r')
     R = f['temptv'][:]
     f.close()
 

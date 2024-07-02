@@ -8,7 +8,15 @@ else
     DIR="$1"
 fi
 
-DATA=$(find "${DIR}" -maxdepth 1 -type f -name ${DIR}".h5" -exec basename {} \;)
+FILES=$(find "$DIR" -maxdepth 1 -name "*.h5")
+if [ -z "$FILES" ]; then
+    echo "No .h5 files found in $DIR"
+    exit 1
+fi
+
+FIRST_FILE=$(echo "$FILES" | head -n 1)
+DATA="$FIRST_FILE"
+DATA=$(basename "$FIRST_FILE")
 
 if [ -z "$2" ]; then
     echo "> SPOKES set as default: 72"
@@ -67,9 +75,7 @@ fi
     python dce_recon.py --dir ${DIR} --data ${DATA} --spokes_per_frame ${SPOKES} --slice_idx ${SLICE_IDX} --slice_inc ${SLICE_INC}
 
     # convert the .h5 file to dicom
-    FN=${DIR}
-    #echo "> FN: ${FN}"
 
-    python dcm_recon.py --h5py ${FN} --spokes_per_frame ${SPOKES}
+    python dcm_recon.py --dir ${DIR} --h5py ${DATA} --spokes_per_frame ${SPOKES}
 
 
